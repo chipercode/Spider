@@ -2,7 +2,7 @@ import requests
 from requests.exceptions import RequestException
 from pyquery import PyQuery as pq
 import os, sys
-
+import time
 
 ##################
 #判断URL能否打开
@@ -68,6 +68,7 @@ def one_story(url):
 	s_name=story('.bookPhr h2')
 	rename_file(s_name.text())
 	os.remove('story_url_tmp.txt')
+	time.sleep(600)
 	
 
 ##############################
