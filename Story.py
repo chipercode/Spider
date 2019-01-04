@@ -2,14 +2,34 @@ import requests
 from requests.exceptions import RequestException
 from pyquery import PyQuery as pq
 import os, sys
-import time
 
+headers = {
+	'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36',
+	'Connection':'close' 
+	}
+##################
+#下载封面图片
+##################
+def get_img(url):
+	html=requests.get(url,headers=headers)
+	img=pq(html,encoding='gbk')		#指定编码要在解析的时候加入
+	img_tag=img('.bookImg img')
+	print(img_tag)
+	img_src=img_tag.attr('src')
+	img_title=img_tag.attr('alt')
+	img_url=('https://www.huaxiangju.com'+img_src)
+	img_content=requests.get(img_url,headers=headers)
+	with open(img_title+'.jpg','wb') as f:
+		f.write(img_content.content)		#写入二进制文件要加'.content'
+		f.close()
+
+		
 ##################
 #判断URL能否打开
 ##################
 def get_one_page(url):
 	try:
-		response=requests.get(url)
+		response=requests.get(url,headers=headers)
 		if response.status_code==200:
 			return response.text
 		return None
@@ -42,14 +62,14 @@ def write_to_file_list(content):
 def web_pages_url(offset):
 	url='https://www.huaxiangju.com'+str(offset)
 	get_one_page(url)
-	html=pq(url,encoding='gbk')
+	html=pq(url,encoding='gbk',headers=headers)
 	parse_one_page(html)
 
 ##############################
 #获取单个故事的名字和章节URL
 ##############################
 def one_story(url):
-	story = pq(url,encoding='gbk')
+	story = pq(url,encoding='gbk',headers=headers)
 	per=story('.chapterCon ul li a').items()
 	f = open("story_url_tmp.txt","w")
 	for i in per:
@@ -68,7 +88,6 @@ def one_story(url):
 	s_name=story('.bookPhr h2')
 	rename_file(s_name.text())
 	os.remove('story_url_tmp.txt')
-	time.sleep(600)
 	
 
 ##############################
@@ -91,6 +110,7 @@ def read_story_url():
 	for i in range(0, result.__len__()):
 		if len(result[i]):
 			one_story(result[i])
+			get_img(result[i])
 	f.close()
 	os.remove('all_url_tmp.txt')
 
@@ -100,7 +120,7 @@ def read_story_url():
 ##############################
 def main(offset):
 	url='https://www.huaxiangju.com/all/0_allvisit_0_0_0_0_2_0_'+str(offset)+'.html'
-	index_url = pq(url,encoding='gbk')
+	index_url = pq(url,encoding='gbk',headers=headers)
 	storys_url=index_url('.listRightBottom ul li h2 a').items()
 	f = open("all_url_tmp.txt","a+")
 	for i in storys_url:
