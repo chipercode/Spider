@@ -94,9 +94,9 @@ def one_story(url):
 		get = f.read()
 		result = get.split('\n')
 		for i in range(-1,-len(result),-1):
-			print('正在解析网页：'+result[i])
+			#print('正在解析网页：'+result[i])
 			web_pages_url(result[i])
-			print('解析完成')		#貌似可以修复文件IO错误。不能！
+			#print('解析完成')		#貌似可以修复文件IO错误。不能！
 		f.close()
 		s_name=story('.bookPhr h2')
 		rename_file(s_name.text())
