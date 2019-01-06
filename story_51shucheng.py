@@ -54,47 +54,10 @@ def story_url():
 					for i in neirong:
 						write_to_file_list('    '+i.text()+'\n\n',story_name)
 
-
-
-	
-	
-
 def write_to_file_list(content,story_name):
 	with open(story_name+'.txt','a',encoding='utf-8') as f:
 		f.write(content)
 		f.close()
 
-		
-		
-
-
 if __name__=='__main__':
 	story_url()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
