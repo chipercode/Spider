@@ -10,19 +10,15 @@ headers = {
 	'Connection':'close'
 	}
 	
-def check_url(url):
-	response = requests.get(url=url,headers=headers)
-	response.encoding='gbk'
-	if response.status_code!=404:
-		while response.status_code!=200:
-				print('暂停抓取文字一分钟')
-				print('【'+url+'】')
-				time.sleep(60)
-				response=requests.get(url,headers=headers)
+def check_url(urls):
+	url=urls	
+	try:
+		response = requests.get(url=url,headers=headers)
+		response.encoding='gbk'
 		return response.text
-	else:
-		print('无法打开该链接：'+url)
-		return 0
+	except requests.exceptions.RequestException as e:
+		print('重试打开链接：'+url)
+		return check_url(url)
 ##############################
 #修改文件名字
 ##############################
